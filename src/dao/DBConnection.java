@@ -3,10 +3,10 @@ package dao;
 import java.sql.*;
 
 public class DBConnection {
-    // Địa chỉ kết nối MySQL (mặc định localhost:3306)
-    private static final String URL = "jdbc:mysql://localhost:3307/JAVA?useSSL=false&serverTimezone=UTC";
+    // Địa chỉ kết nối MySQL (mặc định localhost:3307)
+    private static final String URL = "jdbc:mysql://localhost:3307/java?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root"; // tài khoản MySQL của bạn
-    private static final String PASSWORD = "123456"; // mật khẩu (nếu có)
+    private static final String PASSWORD = ""; // mật khẩu (nếu có)
 
     public static Connection getConnection() throws SQLException {
         try {
