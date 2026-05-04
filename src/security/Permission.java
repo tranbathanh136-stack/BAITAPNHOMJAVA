@@ -1,0 +1,16 @@
+package security;
+
+public enum Permission {
+    BOOK_CREATE,
+    BOOK_UPDATE,
+    BOOK_DELETE,
+    BOOK_VIEW,
+    BOOK_UPDATE_PRICE,
+    CUSTOMER_CREATE,
+    CUSTOMER_UPDATE,
+    INVOICE_CREATE,
+    INVOICE_VIEW,
+    IMPORT_CREATE,
+    EMPLOYEE_MANAGE,
+    STATISTIC_VIEW
+}
