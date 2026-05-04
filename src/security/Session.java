@@ -40,6 +40,7 @@ public class Session {
             case "BOOK_DELETE":
             case "BOOK_UPDATE_PRICE":
             case "IMPORT":
+                return "MANAGER".equalsIgnoreCase(role);
             case "EMPLOYEE_MANAGE":
             case "STATISTIC_VIEW":
                 return "MANAGER".equalsIgnoreCase(role);
@@ -48,6 +49,7 @@ public class Session {
                 // riêng)
                 return true;
             case "SELL":
+                return true;
             case "CUSTOMER_MANAGE":
                 return true;
             default:
