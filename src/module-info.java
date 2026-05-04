@@ -4,8 +4,8 @@
 /**
  * 
  */
-module BAITAPNHOMJAVA {
-	requires java.sql;
-	requires java.desktop;
-	requires java.instrument;
-}
+// module BAITAPNHOMJAVA {
+// 	requires java.sql;
+// 	requires java.desktop;
+// 	requires java.instrument;
+// }
