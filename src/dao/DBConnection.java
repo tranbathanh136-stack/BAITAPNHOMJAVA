@@ -3,11 +3,26 @@ package dao;
 import java.sql.*;
 
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/JAVA";
-    private static final String USER = "root";
-    private static final String PASS = "123456";
+    // Địa chỉ kết nối MySQL (mặc định localhost:3306)
+    private static final String URL = "jdbc:mysql://localhost:3307/JAVA?useSSL=false&serverTimezone=UTC";
+    private static final String USER = "root"; // tài khoản MySQL của bạn
+    private static final String PASSWORD = "123456"; // mật khẩu (nếu có)
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
+
+    // Test kết nối
+    public static void main(String[] args) {
+        try (Connection conn = DBConnection.getConnection()) {
+            System.out.println("Kết nối MySQL thành công!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
