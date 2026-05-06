@@ -2,7 +2,7 @@ package service;
 
 import dao.EmployeeDAO;
 import model.Employee;
-import security.Session;
+import model.Session;
 
 import java.sql.SQLException;
 import java.util.List;

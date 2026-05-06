@@ -1,7 +1,7 @@
 package dao;
 
 import model.Category;
-import util.DBConnection;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

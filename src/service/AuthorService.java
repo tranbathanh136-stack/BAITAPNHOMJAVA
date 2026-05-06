@@ -2,7 +2,8 @@ package service;
 
 import dao.AuthorDAO;
 import model.Author;
-import security.Session;
+import model.Session;
+
 import java.util.List;
 
 public class AuthorService {

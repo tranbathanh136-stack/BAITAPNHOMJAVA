@@ -3,7 +3,6 @@ package dao;
 import model.InventoryStatus;
 import model.SalesByDay;
 import model.TopSellingBook;
-import util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;

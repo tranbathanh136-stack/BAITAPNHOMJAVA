@@ -24,7 +24,7 @@ public class ImportInvoiceDAO {
 
     public ImportInvoice getById(int importId) {
         String sql = "SELECT * FROM import_invoices WHERE import_id = ?";
-        try (Connection conn = util.DBConnection.getConnection();
+        try (Connection conn = dao.DBConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, importId);
             ResultSet rs = ps.executeQuery();
@@ -40,7 +40,7 @@ public class ImportInvoiceDAO {
     public List<ImportInvoice> getAll() {
         List<ImportInvoice> list = new ArrayList<>();
         String sql = "SELECT * FROM import_invoices";
-        try (Connection conn = util.DBConnection.getConnection();
+        try (Connection conn = dao.DBConnection.getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {

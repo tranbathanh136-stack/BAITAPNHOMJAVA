@@ -1,7 +1,6 @@
 package dao;
 
 import model.Employee;
-import util.DBConnection;
 import util.PasswordUtils;
 
 import java.sql.*;

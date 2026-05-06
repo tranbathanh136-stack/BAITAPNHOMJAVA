@@ -26,7 +26,7 @@ public class InvoiceDetailDAO {
     public List<InvoiceDetail> getByInvoiceId(int invoiceId) {
         List<InvoiceDetail> list = new ArrayList<>();
         String sql = "SELECT d.*, b.title as book_title FROM invoice_details d JOIN books b ON d.book_id = b.book_id WHERE d.invoice_id = ?";
-        try (Connection conn = util.DBConnection.getConnection();
+        try (Connection conn = dao.DBConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, invoiceId);
             ResultSet rs = ps.executeQuery();

@@ -2,7 +2,8 @@ package service;
 
 import dao.CategoryDAO;
 import model.Category;
-import security.Session;
+import model.Session;
+
 import java.util.List;
 
 public class CategoryService {

@@ -2,8 +2,6 @@ package service;
 
 import dao.*;
 import model.*;
-import security.Session;
-import util.DBConnection;
 
 import java.math.BigDecimal;
 import java.sql.Connection;

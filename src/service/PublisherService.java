@@ -2,7 +2,8 @@ package service;
 
 import dao.PublisherDAO;
 import model.Publisher;
-import security.Session;
+import model.Session;
+
 import java.util.List;
 
 public class PublisherService {

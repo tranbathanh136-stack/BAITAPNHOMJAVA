@@ -1,7 +1,6 @@
 package dao;
 
 import model.Invoice; // sẽ tạo model Invoice bên dưới
-import util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package dao;
 
 import model.Publisher;
-import util.DBConnection;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
