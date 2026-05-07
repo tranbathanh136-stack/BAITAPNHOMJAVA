@@ -3,33 +3,27 @@ package model;
 public class Sach {
     private int maSach;
     private String tenSach;
-    private String isbn;
     private int maTheLoai;
     private int maNXB;
     private int namXB;
     private double giaNhap;
     private double giaBan;
     private int soLuong;
-    private String moTa;
-    private String duongDanAnh;
 
     public Sach() {
     }
 
-    public Sach(int maSach, String tenSach, String isbn, int maTheLoai, int maNXB,
+    public Sach(int maSach, String tenSach, int maTheLoai, int maNXB,
                 int namXB, double giaNhap, double giaBan,
-                int soLuong, String moTa, String duongDanAnh) {
+                int soLuong) {
         this.maSach = maSach;
         this.tenSach = tenSach;
-        this.isbn = isbn;
         this.maTheLoai = maTheLoai;
         this.maNXB = maNXB;
         this.namXB = namXB;
         this.giaNhap = giaNhap;
         this.giaBan = giaBan;
         this.soLuong = soLuong;
-        this.moTa = moTa;
-        this.duongDanAnh = duongDanAnh;
     }
 
     public int getMaSach() {
@@ -46,14 +40,6 @@ public class Sach {
 
     public void setTenSach(String tenSach) {
         this.tenSach = tenSach;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
     }
 
     public int getMaTheLoai() {
@@ -104,23 +90,8 @@ public class Sach {
         this.soLuong = soLuong;
     }
 
-    public String getMoTa() {
-        return moTa;
-    }
-
-    public void setMoTa(String moTa) {
-        this.moTa = moTa;
-    }
-
-    public String getDuongDanAnh() {
-        return duongDanAnh;
-    }
-
-    public void setDuongDanAnh(String duongDanAnh) {
-        this.duongDanAnh = duongDanAnh;
-    }
     @Override
-public String toString() {
-    return tenSach;
-}
+    public String toString() {
+        return tenSach;
+    }
 }

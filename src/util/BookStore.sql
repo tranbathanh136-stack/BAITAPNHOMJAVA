@@ -69,7 +69,6 @@ CREATE TABLE suppliers (
 CREATE TABLE books (
     book_id INT PRIMARY KEY IDENTITY(1,1),
     title NVARCHAR(200) NOT NULL,
-    isbn NVARCHAR(20) UNIQUE,
     category_id INT,
     publisher_id INT,
     publication_year INT,

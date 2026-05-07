@@ -24,15 +24,12 @@ public class SachDAO {
                 Sach s = new Sach(
                         rs.getInt("book_id"),
                         rs.getString("title"),
-                        rs.getString("isbn"),
                         rs.getInt("category_id"),
                         rs.getInt("publisher_id"),
                         rs.getInt("publication_year"),
                         rs.getDouble("price"),
                         rs.getDouble("selling_price"),
-                        rs.getInt("quantity"),
-                        rs.getString("description"),
-                        rs.getString("image_path")
+                        rs.getInt("quantity")
                 );
 
                 ds.add(s);
@@ -52,23 +49,20 @@ public class SachDAO {
     public int them(Sach s) {
         int ketQua = 0;
 
-        String sql = "INSERT INTO books(title, isbn, category_id, publisher_id, publication_year, price, selling_price, quantity, description, image_path) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO books(title, category_id, publisher_id, publication_year, price, selling_price, quantity) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setString(1, s.getTenSach());
-            ps.setString(2, s.getIsbn());
-            ps.setInt(3, s.getMaTheLoai());
-            ps.setInt(4, s.getMaNXB());
-            ps.setInt(5, s.getNamXB());
-            ps.setDouble(6, s.getGiaNhap());
-            ps.setDouble(7, s.getGiaBan());
-            ps.setInt(8, s.getSoLuong());
-            ps.setString(9, s.getMoTa());
-            ps.setString(10, s.getDuongDanAnh());
+            ps.setInt(2, s.getMaTheLoai());
+            ps.setInt(3, s.getMaNXB());
+            ps.setInt(4, s.getNamXB());
+            ps.setDouble(5, s.getGiaNhap());
+            ps.setDouble(6, s.getGiaBan());
+            ps.setInt(7, s.getSoLuong());
 
             ketQua = ps.executeUpdate();
 
@@ -85,7 +79,7 @@ public class SachDAO {
     public int sua(Sach s) {
         int ketQua = 0;
 
-        String sql = "UPDATE books SET title=?, isbn=?, category_id=?, publisher_id=?, publication_year=?, price=?, selling_price=?, quantity=?, description=?, image_path=? "
+        String sql = "UPDATE books SET title=?, category_id=?, publisher_id=?, publication_year=?, price=?, selling_price=?, quantity=? "
                 + "WHERE book_id=?";
 
         try {
@@ -93,16 +87,13 @@ public class SachDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setString(1, s.getTenSach());
-            ps.setString(2, s.getIsbn());
-            ps.setInt(3, s.getMaTheLoai());
-            ps.setInt(4, s.getMaNXB());
-            ps.setInt(5, s.getNamXB());
-            ps.setDouble(6, s.getGiaNhap());
-            ps.setDouble(7, s.getGiaBan());
-            ps.setInt(8, s.getSoLuong());
-            ps.setString(9, s.getMoTa());
-            ps.setString(10, s.getDuongDanAnh());
-            ps.setInt(11, s.getMaSach());
+            ps.setInt(2, s.getMaTheLoai());
+            ps.setInt(3, s.getMaNXB());
+            ps.setInt(4, s.getNamXB());
+            ps.setDouble(5, s.getGiaNhap());
+            ps.setDouble(6, s.getGiaBan());
+            ps.setInt(7, s.getSoLuong());
+            ps.setInt(8, s.getMaSach());
 
             ketQua = ps.executeUpdate();
 
@@ -160,5 +151,44 @@ public class SachDAO {
         }
 
         return ketQua;
+    }
+
+    public List<Sach> timTheoTen(String tuKhoa) {
+        List<Sach> ds = new ArrayList<Sach>();
+
+        String sql = "SELECT * FROM books WHERE title LIKE ?";
+
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, "%" + tuKhoa + "%");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Sach s = new Sach(
+                        rs.getInt("book_id"),
+                        rs.getString("title"),
+                        rs.getInt("category_id"),
+                        rs.getInt("publisher_id"),
+                        rs.getInt("publication_year"),
+                        rs.getDouble("price"),
+                        rs.getDouble("selling_price"),
+                        rs.getInt("quantity")
+                );
+
+                ds.add(s);
+            }
+
+            rs.close();
+            ps.close();
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ds;
     }
 }

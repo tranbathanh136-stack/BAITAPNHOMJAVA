@@ -1,51 +1,86 @@
 package service;
 
-import dao.HoaDonDAO;
 import dao.HoaDonChiTietDAO;
+import dao.HoaDonDAO;
 import dao.SachDAO;
 import model.HoaDon;
 import model.HoaDonChiTiet;
 import model.Sach;
 
+import java.util.List;
+
 public class HoaDonService {
+
     private HoaDonDAO hoaDonDAO;
-    private HoaDonChiTietDAO chiTietDAO;
+    private HoaDonChiTietDAO hoaDonChiTietDAO;
     private SachDAO sachDAO;
 
     public HoaDonService() {
+
         hoaDonDAO = new HoaDonDAO();
-        chiTietDAO = new HoaDonChiTietDAO();
+        hoaDonChiTietDAO = new HoaDonChiTietDAO();
         sachDAO = new SachDAO();
     }
 
-    public boolean taoHoaDon(int maKhachHang, int maNhanVien, Sach sach, int soLuong) {
+    public boolean taoHoaDonNhieuSach(
+            int maKhachHang,
+            int maNhanVien,
+            List<Sach> dsSach,
+            List<Integer> dsSoLuong
+    ) {
+
         try {
-            if (sach == null) {
-                return false;
+
+            double tongTien = 0;
+
+            for (int i = 0; i < dsSach.size(); i++) {
+
+                Sach sach = dsSach.get(i);
+
+                int soLuong = dsSoLuong.get(i);
+
+                tongTien = tongTien + sach.getGiaBan() * soLuong;
             }
 
-            if (soLuong <= 0 || soLuong > sach.getSoLuong()) {
-                return false;
-            }
+            HoaDon hd = new HoaDon(
+                    maKhachHang,
+                    maNhanVien,
+                    tongTien
+            );
 
-            double tongTien = sach.getGiaBan() * soLuong;
-
-            HoaDon hoaDon = new HoaDon(maKhachHang, maNhanVien, tongTien);
-            int maHoaDon = hoaDonDAO.them(hoaDon);
+            int maHoaDon = hoaDonDAO.them(hd);
 
             if (maHoaDon <= 0) {
                 return false;
             }
 
-            HoaDonChiTiet chiTiet = new HoaDonChiTiet(maHoaDon, sach.getMaSach(), soLuong, sach.getGiaBan());
-            chiTietDAO.them(chiTiet);
+            for (int i = 0; i < dsSach.size(); i++) {
 
-            sach.setSoLuong(sach.getSoLuong() - soLuong);
-            sachDAO.sua(sach);
+                Sach sach = dsSach.get(i);
+
+                int soLuong = dsSoLuong.get(i);
+
+                HoaDonChiTiet ct = new HoaDonChiTiet(
+                        maHoaDon,
+                        sach.getMaSach(),
+                        soLuong,
+                        sach.getGiaBan()
+                );
+
+                hoaDonChiTietDAO.them(ct);
+
+                int soLuongMoi = sach.getSoLuong() - soLuong;
+
+                sachDAO.capNhatSoLuong(
+                        sach.getMaSach(),
+                        soLuongMoi
+                );
+            }
 
             return true;
 
         } catch (Exception e) {
+
             e.printStackTrace();
         }
 

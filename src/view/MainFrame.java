@@ -81,19 +81,21 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == btnSach) {
-        new SachFrame(currentUser);
-    } else if (e.getSource() == btnKhachHang) {
-        new KhachHangFrame();
-    } else if (e.getSource() == btnHoaDon) {
-        new HoaDonFrame(currentUser);
-    } else if (e.getSource() == btnNhapSach) {
-        new NhapSachFrame(currentUser);
-    } else if (e.getSource() == btnDangXuat) {
-        new LoginFrame();
-        dispose();
-    } else {
-        JOptionPane.showMessageDialog(this, "Chức năng đang được phát triển");
+        if (e.getSource() == btnSach) {
+            new SachFrame(currentUser);
+        } else if (e.getSource() == btnKhachHang) {
+            new KhachHangFrame();
+        } else if (e.getSource() == btnHoaDon) {
+            new HoaDonFrame(currentUser);
+        } else if (e.getSource() == btnNhapSach) {
+            new NhapSachFrame(currentUser);
+        } else if (e.getSource() == btnNhanVien) {
+            new NhanVienFrame();
+        } else if (e.getSource() == btnDangXuat) {
+            new LoginFrame();
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Chức năng đang được phát triển");
+        }
     }
-}
 }

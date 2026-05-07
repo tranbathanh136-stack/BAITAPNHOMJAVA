@@ -6,6 +6,7 @@ import model.Sach;
 import java.util.List;
 
 public class SachService {
+
     private SachDAO sachDAO;
 
     public SachService() {
@@ -26,5 +27,9 @@ public class SachService {
 
     public boolean xoaSach(int maSach) {
         return sachDAO.xoa(maSach) > 0;
+    }
+
+    public List<Sach> timTheoTen(String tuKhoa) {
+        return sachDAO.timTheoTen(tuKhoa);
     }
 }

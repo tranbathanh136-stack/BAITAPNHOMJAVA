@@ -1,17 +1,23 @@
 package dao;
 
 import model.HoaDon;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class HoaDonDAO {
 
     public int them(HoaDon hd) {
         int maHoaDon = -1;
 
-        String sql = "INSERT INTO invoices(customer_id, employee_id, total_amount, final_amount) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO invoices(customer_id, employee_id, total_amount, final_amount) "
+                + "VALUES (?, ?, ?, ?)";
 
         try {
             Connection conn = DBConnection.getConnection();
+
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             ps.setInt(1, hd.getMaKhachHang());
@@ -19,13 +25,19 @@ public class HoaDonDAO {
             ps.setDouble(3, hd.getTongTien());
             ps.setDouble(4, hd.getTongTien());
 
-            ps.executeUpdate();
+            int ketQua = ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                maHoaDon = rs.getInt(1);
+            if (ketQua > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+
+                if (rs.next()) {
+                    maHoaDon = rs.getInt(1);
+                }
+
+                rs.close();
             }
 
+            ps.close();
             conn.close();
 
         } catch (Exception e) {
