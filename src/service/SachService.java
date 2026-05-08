@@ -32,4 +32,8 @@ public class SachService {
     public List<Sach> timTheoTen(String tuKhoa) {
         return sachDAO.timTheoTen(tuKhoa);
     }
+
+    public List<Sach> timKiem(String tenSach, int maTheLoai, int maNXB) {
+        return sachDAO.timKiem(tenSach, maTheLoai, maNXB);
+    }
 }
