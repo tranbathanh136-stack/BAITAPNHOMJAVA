@@ -11,23 +11,34 @@ import java.util.List;
 public class KhachHangDAO {
 
     public List<KhachHang> layTatCa() {
-        List<KhachHang> ds = new ArrayList<KhachHang>();
 
-        String sql = "SELECT * FROM customers";
+        List<KhachHang> ds =
+                new ArrayList<KhachHang>();
+
+        String sql =
+                "SELECT * FROM customers";
 
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+
+            Connection conn =
+                    DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+
+            ResultSet rs =
+                    ps.executeQuery();
 
             while (rs.next()) {
-                KhachHang kh = new KhachHang(
-                        rs.getInt("customer_id"),
-                        rs.getString("full_name"),
-                        rs.getString("phone"),
-                        rs.getString("email"),
-                        rs.getString("address")
-                );
+
+                KhachHang kh =
+                        new KhachHang(
+                                rs.getInt("customer_id"),
+                                rs.getString("full_name"),
+                                rs.getString("phone"),
+                                rs.getString("email"),
+                                rs.getString("address")
+                        );
 
                 ds.add(kh);
             }
@@ -43,14 +54,62 @@ public class KhachHangDAO {
         return ds;
     }
 
-    public int them(KhachHang kh) {
-        int ketQua = 0;
+    public KhachHang timTheoSDT(String sdt) {
 
-        String sql = "INSERT INTO customers(full_name, phone, email, address) VALUES (?, ?, ?, ?)";
+        KhachHang kh = null;
+
+        String sql =
+                "SELECT * FROM customers WHERE phone = ?";
 
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+
+            Connection conn =
+                    DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+
+            ps.setString(1, sdt);
+
+            ResultSet rs =
+                    ps.executeQuery();
+
+            if (rs.next()) {
+
+                kh = new KhachHang(
+                        rs.getInt("customer_id"),
+                        rs.getString("full_name"),
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("address")
+                );
+            }
+
+            rs.close();
+            ps.close();
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return kh;
+    }
+
+    public int them(KhachHang kh) {
+
+        int ketQua = 0;
+
+        String sql =
+                "INSERT INTO customers(full_name, phone, email, address) VALUES (?, ?, ?, ?)";
+
+        try {
+
+            Connection conn =
+                    DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
 
             ps.setString(1, kh.getHoTen());
             ps.setString(2, kh.getSoDienThoai());
@@ -70,13 +129,19 @@ public class KhachHangDAO {
     }
 
     public int sua(KhachHang kh) {
+
         int ketQua = 0;
 
-        String sql = "UPDATE customers SET full_name=?, phone=?, email=?, address=? WHERE customer_id=?";
+        String sql =
+                "UPDATE customers SET full_name=?, phone=?, email=?, address=? WHERE customer_id=?";
 
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+
+            Connection conn =
+                    DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
 
             ps.setString(1, kh.getHoTen());
             ps.setString(2, kh.getSoDienThoai());
@@ -97,13 +162,19 @@ public class KhachHangDAO {
     }
 
     public int xoa(int maKhachHang) {
+
         int ketQua = 0;
 
-        String sql = "DELETE FROM customers WHERE customer_id=?";
+        String sql =
+                "DELETE FROM customers WHERE customer_id=?";
 
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+
+            Connection conn =
+                    DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
 
             ps.setInt(1, maKhachHang);
 

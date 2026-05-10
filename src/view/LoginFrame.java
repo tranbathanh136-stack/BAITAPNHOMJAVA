@@ -66,7 +66,6 @@ public class LoginFrame extends JFrame implements ActionListener {
             User user = authService.login(username, password);
 
             if (user != null) {
-                JOptionPane.showMessageDialog(this, "Dang nhap thanh cong!");
                 new MainFrame(user);
                 dispose();
             } else {

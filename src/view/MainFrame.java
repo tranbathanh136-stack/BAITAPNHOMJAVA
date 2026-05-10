@@ -91,11 +91,11 @@ public class MainFrame extends JFrame implements ActionListener {
             new NhapSachFrame(currentUser);
         } else if (e.getSource() == btnNhanVien) {
             new NhanVienFrame();
+        } else if (e.getSource() == btnThongKe) {
+            new ThongKeFrame();
         } else if (e.getSource() == btnDangXuat) {
             new LoginFrame();
             dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Chức năng đang được phát triển");
         }
     }
 }
