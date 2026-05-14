@@ -5,11 +5,13 @@ public class NhanVien {
     private int maNhanVien;
     private int maUser;
 
+    private String username;
+    private String password;
+
     private String hoTen;
     private String soDienThoai;
     private String email;
     private String diaChi;
-    private String chucVu;
 
     public NhanVien() {
     }
@@ -17,20 +19,21 @@ public class NhanVien {
     public NhanVien(
             int maNhanVien,
             int maUser,
+            String username,
+            String password,
             String hoTen,
             String soDienThoai,
             String email,
-            String diaChi,
-            String chucVu
+            String diaChi
     ) {
-
         this.maNhanVien = maNhanVien;
         this.maUser = maUser;
+        this.username = username;
+        this.password = password;
         this.hoTen = hoTen;
         this.soDienThoai = soDienThoai;
         this.email = email;
         this.diaChi = diaChi;
-        this.chucVu = chucVu;
     }
 
     public int getMaNhanVien() {
@@ -47,6 +50,22 @@ public class NhanVien {
 
     public void setMaUser(int maUser) {
         this.maUser = maUser;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getHoTen() {
@@ -79,13 +98,5 @@ public class NhanVien {
 
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
-    }
-
-    public String getChucVu() {
-        return chucVu;
-    }
-
-    public void setChucVu(String chucVu) {
-        this.chucVu = chucVu;
     }
 }

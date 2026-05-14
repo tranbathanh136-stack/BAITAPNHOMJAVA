@@ -1,6 +1,7 @@
 package model;
 
 public class NhaXuatBan {
+
     private int maNXB;
     private String tenNXB;
 
@@ -28,7 +29,6 @@ public class NhaXuatBan {
         this.tenNXB = tenNXB;
     }
 
-    @Override
     public String toString() {
         return tenNXB;
     }

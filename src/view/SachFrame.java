@@ -22,13 +22,23 @@ public class SachFrame extends JFrame implements ActionListener, MouseListener {
     private TheLoaiService theLoaiService;
     private NhaXuatBanService nxbService;
 
-    private JTextField txtMaSach, txtTenSach, txtNamXB, txtGiaNhap, txtGiaBan, txtSoLuong;
+    private JTextField txtMaSach;
+    private JTextField txtTenSach;
+    private JTextField txtNamXB;
+    private JTextField txtGiaNhap;
+    private JTextField txtGiaBan;
+    private JTextField txtSoLuong;
     private JTextField txtTimKiem;
 
     private JComboBox<TheLoai> cbTheLoai;
     private JComboBox<NhaXuatBan> cbNXB;
 
-    private JButton btnThem, btnSua, btnXoa, btnLamMoi, btnTim;
+    private JButton btnThem;
+    private JButton btnSua;
+    private JButton btnXoa;
+    private JButton btnLamMoi;
+    private JButton btnTim;
+    private JButton btnDong;
 
     private JTable bang;
     private DefaultTableModel model;
@@ -50,6 +60,10 @@ public class SachFrame extends JFrame implements ActionListener, MouseListener {
         setTitle("Quan ly sach");
         setSize(950, 620);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JLabel lblTieuDe = new JLabel("QUAN LY SACH", JLabel.CENTER);
+        lblTieuDe.setFont(new Font("Arial", Font.BOLD, 24));
 
         txtMaSach = new JTextField();
         txtMaSach.setEditable(false);
@@ -65,6 +79,7 @@ public class SachFrame extends JFrame implements ActionListener, MouseListener {
         cbNXB = new JComboBox<NhaXuatBan>();
 
         JPanel pnInput = new JPanel(new GridLayout(8, 2, 10, 10));
+        pnInput.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         pnInput.add(new JLabel("Ma sach"));
         pnInput.add(txtMaSach);
@@ -95,20 +110,24 @@ public class SachFrame extends JFrame implements ActionListener, MouseListener {
         btnXoa = new JButton("Xoa");
         btnLamMoi = new JButton("Lam moi");
         btnTim = new JButton("Tim");
+        btnDong = new JButton("Dong");
 
         btnThem.addActionListener(this);
         btnSua.addActionListener(this);
         btnXoa.addActionListener(this);
         btnLamMoi.addActionListener(this);
         btnTim.addActionListener(this);
+        btnDong.addActionListener(this);
 
-        JPanel pnBtn = new JPanel();
+        JPanel pnBtn = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         pnBtn.add(btnThem);
         pnBtn.add(btnSua);
         pnBtn.add(btnXoa);
         pnBtn.add(btnLamMoi);
+        pnBtn.add(btnDong);
 
         JPanel pnTim = new JPanel(new BorderLayout(10, 10));
+        pnTim.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         pnTim.add(new JLabel("Tim sach"), BorderLayout.WEST);
         pnTim.add(txtTimKiem, BorderLayout.CENTER);
         pnTim.add(btnTim, BorderLayout.EAST);
@@ -124,14 +143,21 @@ public class SachFrame extends JFrame implements ActionListener, MouseListener {
         model.addColumn("So luong");
 
         bang = new JTable(model);
+        bang.setRowHeight(24);
         bang.addMouseListener(this);
 
-        JPanel pnNorth = new JPanel(new BorderLayout());
+        JPanel pnNorth = new JPanel(new BorderLayout(10, 10));
+        pnNorth.add(lblTieuDe, BorderLayout.NORTH);
         pnNorth.add(pnInput, BorderLayout.CENTER);
         pnNorth.add(pnTim, BorderLayout.SOUTH);
 
+        JPanel pnCenter = new JPanel(new BorderLayout());
+        pnCenter.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        pnCenter.add(new JScrollPane(bang), BorderLayout.CENTER);
+
+        setLayout(new BorderLayout(10, 10));
         add(pnNorth, BorderLayout.NORTH);
-        add(new JScrollPane(bang), BorderLayout.CENTER);
+        add(pnCenter, BorderLayout.CENTER);
         add(pnBtn, BorderLayout.SOUTH);
 
         setVisible(true);
@@ -308,11 +334,15 @@ public class SachFrame extends JFrame implements ActionListener, MouseListener {
         if (cbNXB.getItemCount() > 0) {
             cbNXB.setSelectedIndex(0);
         }
+
+        bang.clearSelection();
     }
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnThem) {
-            if (!validateInput()) return;
+            if (!validateInput()) {
+                return;
+            }
 
             Sach s = getForm();
 
@@ -331,7 +361,9 @@ public class SachFrame extends JFrame implements ActionListener, MouseListener {
                 return;
             }
 
-            if (!validateInput()) return;
+            if (!validateInput()) {
+                return;
+            }
 
             Sach s = getForm();
 
@@ -369,10 +401,18 @@ public class SachFrame extends JFrame implements ActionListener, MouseListener {
         if (e.getSource() == btnTim) {
             timKiem();
         }
+
+        if (e.getSource() == btnDong) {
+            dispose();
+        }
     }
 
     public void mouseClicked(MouseEvent e) {
         int row = bang.getSelectedRow();
+
+        if (row < 0) {
+            return;
+        }
 
         txtMaSach.setText(model.getValueAt(row, 0).toString());
         txtTenSach.setText(model.getValueAt(row, 1).toString());
@@ -388,8 +428,15 @@ public class SachFrame extends JFrame implements ActionListener, MouseListener {
         txtSoLuong.setText(model.getValueAt(row, 7).toString());
     }
 
-    public void mousePressed(MouseEvent e) {}
-    public void mouseReleased(MouseEvent e) {}
-    public void mouseEntered(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+    }
 }

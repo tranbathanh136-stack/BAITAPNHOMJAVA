@@ -1,6 +1,7 @@
 package model;
 
 public class Sach {
+
     private int maSach;
     private String tenSach;
     private int maTheLoai;
@@ -13,9 +14,16 @@ public class Sach {
     public Sach() {
     }
 
-    public Sach(int maSach, String tenSach, int maTheLoai, int maNXB,
-                int namXB, double giaNhap, double giaBan,
-                int soLuong) {
+    public Sach(
+            int maSach,
+            String tenSach,
+            int maTheLoai,
+            int maNXB,
+            int namXB,
+            double giaNhap,
+            double giaBan,
+            int soLuong
+    ) {
         this.maSach = maSach;
         this.tenSach = tenSach;
         this.maTheLoai = maTheLoai;
@@ -90,7 +98,6 @@ public class Sach {
         this.soLuong = soLuong;
     }
 
-    @Override
     public String toString() {
         return tenSach;
     }

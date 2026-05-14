@@ -12,8 +12,17 @@ import java.util.List;
 public class KhachHangFrame extends JFrame implements ActionListener, MouseListener {
     private KhachHangService khachHangService;
 
-    private JTextField txtMaKhachHang, txtHoTen, txtSoDienThoai, txtEmail, txtDiaChi;
-    private JButton btnThem, btnSua, btnXoa, btnLamMoi, btnDong;
+    private JTextField txtMaKhachHang;
+    private JTextField txtHoTen;
+    private JTextField txtSoDienThoai;
+    private JTextField txtEmail;
+    private JTextField txtDiaChi;
+
+    private JButton btnThem;
+    private JButton btnSua;
+    private JButton btnXoa;
+    private JButton btnLamMoi;
+    private JButton btnDong;
 
     private JTable bang;
     private DefaultTableModel model;
@@ -43,6 +52,7 @@ public class KhachHangFrame extends JFrame implements ActionListener, MouseListe
         txtDiaChi = new JTextField();
 
         JPanel pnNhap = new JPanel(new GridLayout(5, 2, 10, 10));
+        pnNhap.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         pnNhap.add(new JLabel("Mã khách hàng:"));
         pnNhap.add(txtMaKhachHang);
@@ -71,7 +81,7 @@ public class KhachHangFrame extends JFrame implements ActionListener, MouseListe
         btnLamMoi.addActionListener(this);
         btnDong.addActionListener(this);
 
-        JPanel pnNut = new JPanel(new FlowLayout());
+        JPanel pnNut = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         pnNut.add(btnThem);
         pnNut.add(btnSua);
         pnNut.add(btnXoa);
@@ -86,18 +96,24 @@ public class KhachHangFrame extends JFrame implements ActionListener, MouseListe
         model.addColumn("Địa chỉ");
 
         bang = new JTable(model);
+        bang.setRowHeight(24);
         bang.addMouseListener(this);
 
         JScrollPane scrollPane = new JScrollPane(bang);
 
         JPanel pnTren = new JPanel(new BorderLayout(10, 10));
+        pnTren.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
         pnTren.add(lblTieuDe, BorderLayout.NORTH);
         pnTren.add(pnNhap, BorderLayout.CENTER);
-        pnTren.add(pnNut, BorderLayout.SOUTH);
+
+        JPanel pnGiua = new JPanel(new BorderLayout());
+        pnGiua.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        pnGiua.add(scrollPane, BorderLayout.CENTER);
 
         setLayout(new BorderLayout(10, 10));
         add(pnTren, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
+        add(pnGiua, BorderLayout.CENTER);
+        add(pnNut, BorderLayout.SOUTH);
 
         setVisible(true);
     }
@@ -200,7 +216,10 @@ public class KhachHangFrame extends JFrame implements ActionListener, MouseListe
                 return;
             }
 
-            int chon = JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa khách hàng này không?");
+            int chon = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có muốn xóa khách hàng này không?"
+            );
 
             if (chon == JOptionPane.YES_OPTION) {
                 int maKhachHang = Integer.parseInt(txtMaKhachHang.getText());
@@ -226,6 +245,10 @@ public class KhachHangFrame extends JFrame implements ActionListener, MouseListe
 
     public void mouseClicked(MouseEvent e) {
         int dong = bang.getSelectedRow();
+
+        if (dong < 0) {
+            return;
+        }
 
         txtMaKhachHang.setText(model.getValueAt(dong, 0).toString());
         txtHoTen.setText(model.getValueAt(dong, 1).toString());

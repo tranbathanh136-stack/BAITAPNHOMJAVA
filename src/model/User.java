@@ -1,17 +1,25 @@
 package model;
 
 public class User {
+
     private int userId;
     private String username;
-    private String password; // đã hash
+    private String password;
     private String fullName;
     private int roleId;
-    private String roleName; // join từ bảng roles, để hiển thị
+    private String roleName;
 
     public User() {
     }
 
-    public User(int userId, String username, String password, String fullName, int roleId, String roleName) {
+    public User(
+            int userId,
+            String username,
+            String password,
+            String fullName,
+            int roleId,
+            String roleName
+    ) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -20,7 +28,6 @@ public class User {
         this.roleName = roleName;
     }
 
-    // Getters và Setters đầy đủ
     public int getUserId() {
         return userId;
     }
@@ -67,10 +74,5 @@ public class User {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
-    }
-
-    @Override
-    public String toString() {
-        return fullName + " (" + roleName + ")";
     }
 }

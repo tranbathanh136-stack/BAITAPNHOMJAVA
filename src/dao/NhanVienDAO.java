@@ -13,7 +13,10 @@ public class NhanVienDAO {
     public List<NhanVien> layTatCa() {
         List<NhanVien> ds = new ArrayList<NhanVien>();
 
-        String sql = "SELECT * FROM employees";
+        String sql = "SELECT e.employee_id, e.user_id, u.username, u.password, "
+                + "e.full_name, e.phone, e.email, e.address "
+                + "FROM employees e "
+                + "JOIN users u ON e.user_id = u.user_id";
 
         try {
             Connection conn = DBConnection.getConnection();
@@ -24,11 +27,12 @@ public class NhanVienDAO {
                 NhanVien nv = new NhanVien(
                         rs.getInt("employee_id"),
                         rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
                         rs.getString("full_name"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        rs.getString("address"),
-                        rs.getString("position")
+                        rs.getString("address")
                 );
 
                 ds.add(nv);
@@ -48,13 +52,18 @@ public class NhanVienDAO {
     public List<NhanVien> timTheoTen(String tuKhoa) {
         List<NhanVien> ds = new ArrayList<NhanVien>();
 
-        String sql = "SELECT * FROM employees WHERE full_name LIKE ?";
+        String sql = "SELECT e.employee_id, e.user_id, u.username, u.password, "
+                + "e.full_name, e.phone, e.email, e.address "
+                + "FROM employees e "
+                + "JOIN users u ON e.user_id = u.user_id "
+                + "WHERE e.full_name LIKE ? OR u.username LIKE ?";
 
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setString(1, "%" + tuKhoa + "%");
+            ps.setString(2, "%" + tuKhoa + "%");
 
             ResultSet rs = ps.executeQuery();
 
@@ -62,11 +71,12 @@ public class NhanVienDAO {
                 NhanVien nv = new NhanVien(
                         rs.getInt("employee_id"),
                         rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
                         rs.getString("full_name"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        rs.getString("address"),
-                        rs.getString("position")
+                        rs.getString("address")
                 );
 
                 ds.add(nv);
@@ -86,23 +96,56 @@ public class NhanVienDAO {
     public int them(NhanVien nv) {
         int ketQua = 0;
 
-        String sql = "INSERT INTO employees(user_id, full_name, phone, email, address, position) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlUser = "INSERT INTO users(username, password, full_name, role_id) "
+                + "VALUES (?, ?, ?, 2)";
+
+        String sqlEmployee = "INSERT INTO employees(user_id, full_name, phone, email, address) "
+                + "VALUES (?, ?, ?, ?, ?)";
 
         try {
             Connection conn = DBConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            conn.setAutoCommit(false);
 
-            ps.setInt(1, nv.getMaUser());
-            ps.setString(2, nv.getHoTen());
-            ps.setString(3, nv.getSoDienThoai());
-            ps.setString(4, nv.getEmail());
-            ps.setString(5, nv.getDiaChi());
-            ps.setString(6, nv.getChucVu());
+            PreparedStatement psUser = conn.prepareStatement(
+                    sqlUser,
+                    PreparedStatement.RETURN_GENERATED_KEYS
+            );
 
-            ketQua = ps.executeUpdate();
+            psUser.setString(1, nv.getUsername());
+            psUser.setString(2, nv.getPassword());
+            psUser.setString(3, nv.getHoTen());
 
-            ps.close();
+            int kqUser = psUser.executeUpdate();
+
+            if (kqUser > 0) {
+                ResultSet rsKey = psUser.getGeneratedKeys();
+
+                if (rsKey.next()) {
+                    int userId = rsKey.getInt(1);
+
+                    PreparedStatement psEmployee = conn.prepareStatement(sqlEmployee);
+
+                    psEmployee.setInt(1, userId);
+                    psEmployee.setString(2, nv.getHoTen());
+                    psEmployee.setString(3, nv.getSoDienThoai());
+                    psEmployee.setString(4, nv.getEmail());
+                    psEmployee.setString(5, nv.getDiaChi());
+
+                    ketQua = psEmployee.executeUpdate();
+
+                    psEmployee.close();
+                }
+
+                rsKey.close();
+            }
+
+            if (ketQua > 0) {
+                conn.commit();
+            } else {
+                conn.rollback();
+            }
+
+            psUser.close();
             conn.close();
 
         } catch (Exception e) {
@@ -115,24 +158,43 @@ public class NhanVienDAO {
     public int sua(NhanVien nv) {
         int ketQua = 0;
 
-        String sql = "UPDATE employees SET user_id=?, full_name=?, phone=?, email=?, address=?, position=? "
+        String sqlUser = "UPDATE users SET username=?, password=?, full_name=? WHERE user_id=?";
+
+        String sqlEmployee = "UPDATE employees SET full_name=?, phone=?, email=?, address=? "
                 + "WHERE employee_id=?";
 
         try {
             Connection conn = DBConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            conn.setAutoCommit(false);
 
-            ps.setInt(1, nv.getMaUser());
-            ps.setString(2, nv.getHoTen());
-            ps.setString(3, nv.getSoDienThoai());
-            ps.setString(4, nv.getEmail());
-            ps.setString(5, nv.getDiaChi());
-            ps.setString(6, nv.getChucVu());
-            ps.setInt(7, nv.getMaNhanVien());
+            PreparedStatement psUser = conn.prepareStatement(sqlUser);
 
-            ketQua = ps.executeUpdate();
+            psUser.setString(1, nv.getUsername());
+            psUser.setString(2, nv.getPassword());
+            psUser.setString(3, nv.getHoTen());
+            psUser.setInt(4, nv.getMaUser());
 
-            ps.close();
+            int kqUser = psUser.executeUpdate();
+
+            PreparedStatement psEmployee = conn.prepareStatement(sqlEmployee);
+
+            psEmployee.setString(1, nv.getHoTen());
+            psEmployee.setString(2, nv.getSoDienThoai());
+            psEmployee.setString(3, nv.getEmail());
+            psEmployee.setString(4, nv.getDiaChi());
+            psEmployee.setInt(5, nv.getMaNhanVien());
+
+            int kqEmployee = psEmployee.executeUpdate();
+
+            if (kqUser > 0 && kqEmployee > 0) {
+                ketQua = 1;
+                conn.commit();
+            } else {
+                conn.rollback();
+            }
+
+            psUser.close();
+            psEmployee.close();
             conn.close();
 
         } catch (Exception e) {
@@ -145,16 +207,53 @@ public class NhanVienDAO {
     public int xoa(int maNhanVien) {
         int ketQua = 0;
 
-        String sql = "DELETE FROM employees WHERE employee_id=?";
+        String sqlSelect = "SELECT user_id FROM employees WHERE employee_id=?";
+        String sqlDeleteEmployee = "DELETE FROM employees WHERE employee_id=?";
+        String sqlDeleteUser = "DELETE FROM users WHERE user_id=?";
 
         try {
             Connection conn = DBConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            conn.setAutoCommit(false);
 
-            ps.setInt(1, maNhanVien);
-            ketQua = ps.executeUpdate();
+            int userId = 0;
 
-            ps.close();
+            PreparedStatement psSelect = conn.prepareStatement(sqlSelect);
+            psSelect.setInt(1, maNhanVien);
+
+            ResultSet rs = psSelect.executeQuery();
+
+            if (rs.next()) {
+                userId = rs.getInt("user_id");
+            }
+
+            rs.close();
+            psSelect.close();
+
+            if (userId == 0 || userId == 1) {
+                conn.rollback();
+                conn.close();
+                return 0;
+            }
+
+            PreparedStatement psEmployee = conn.prepareStatement(sqlDeleteEmployee);
+            psEmployee.setInt(1, maNhanVien);
+
+            int kqEmployee = psEmployee.executeUpdate();
+
+            PreparedStatement psUser = conn.prepareStatement(sqlDeleteUser);
+            psUser.setInt(1, userId);
+
+            int kqUser = psUser.executeUpdate();
+
+            if (kqEmployee > 0 && kqUser > 0) {
+                ketQua = 1;
+                conn.commit();
+            } else {
+                conn.rollback();
+            }
+
+            psEmployee.close();
+            psUser.close();
             conn.close();
 
         } catch (Exception e) {

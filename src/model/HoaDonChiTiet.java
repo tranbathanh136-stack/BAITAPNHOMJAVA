@@ -2,6 +2,7 @@ package model;
 
 public class HoaDonChiTiet {
 
+    private int maChiTiet;
     private int maHoaDon;
     private int maSach;
     private int soLuong;
@@ -10,11 +11,38 @@ public class HoaDonChiTiet {
     public HoaDonChiTiet() {
     }
 
-    public HoaDonChiTiet(int maHoaDon, int maSach, int soLuong, double donGia) {
+    public HoaDonChiTiet(
+            int maHoaDon,
+            int maSach,
+            int soLuong,
+            double donGia
+    ) {
         this.maHoaDon = maHoaDon;
         this.maSach = maSach;
         this.soLuong = soLuong;
         this.donGia = donGia;
+    }
+
+    public HoaDonChiTiet(
+            int maChiTiet,
+            int maHoaDon,
+            int maSach,
+            int soLuong,
+            double donGia
+    ) {
+        this.maChiTiet = maChiTiet;
+        this.maHoaDon = maHoaDon;
+        this.maSach = maSach;
+        this.soLuong = soLuong;
+        this.donGia = donGia;
+    }
+
+    public int getMaChiTiet() {
+        return maChiTiet;
+    }
+
+    public void setMaChiTiet(int maChiTiet) {
+        this.maChiTiet = maChiTiet;
     }
 
     public int getMaHoaDon() {

@@ -1,6 +1,7 @@
 package model;
 
 public class TheLoai {
+
     private int maTheLoai;
     private String tenTheLoai;
 
@@ -28,7 +29,6 @@ public class TheLoai {
         this.tenTheLoai = tenTheLoai;
     }
 
-    @Override
     public String toString() {
         return tenTheLoai;
     }

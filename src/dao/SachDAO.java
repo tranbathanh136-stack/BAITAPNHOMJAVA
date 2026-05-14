@@ -56,8 +56,9 @@ public class SachDAO {
 
         int ketQua = 0;
 
-        String sql = "INSERT INTO books(title, category_id, publisher_id, publication_year, price, selling_price, quantity) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql =
+                "INSERT INTO books(title, category_id, publisher_id, publication_year, price, selling_price, quantity) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
 
@@ -90,8 +91,9 @@ public class SachDAO {
 
         int ketQua = 0;
 
-        String sql = "UPDATE books SET title=?, category_id=?, publisher_id=?, publication_year=?, price=?, selling_price=?, quantity=? "
-                + "WHERE book_id=?";
+        String sql =
+                "UPDATE books SET title=?, category_id=?, publisher_id=?, publication_year=?, price=?, selling_price=?, quantity=? "
+                        + "WHERE book_id=?";
 
         try {
 
@@ -220,11 +222,17 @@ public class SachDAO {
         return ds;
     }
 
-    public List<Sach> timKiem(String tenSach, int maTheLoai, int maNXB) {
+    public List<Sach> timKiem(
+            String tenSach,
+            int maTheLoai,
+            int maNXB,
+            int namXB
+    ) {
 
         List<Sach> ds = new ArrayList<Sach>();
 
-        String sql = "SELECT * FROM books WHERE title LIKE ?";
+        String sql =
+                "SELECT * FROM books WHERE title LIKE ?";
 
         if (maTheLoai > 0) {
             sql += " AND category_id = ?";
@@ -232,6 +240,10 @@ public class SachDAO {
 
         if (maNXB > 0) {
             sql += " AND publisher_id = ?";
+        }
+
+        if (namXB > 0) {
+            sql += " AND publication_year = ?";
         }
 
         try {
@@ -250,6 +262,10 @@ public class SachDAO {
 
             if (maNXB > 0) {
                 ps.setInt(index++, maNXB);
+            }
+
+            if (namXB > 0) {
+                ps.setInt(index++, namXB);
             }
 
             ResultSet rs = ps.executeQuery();

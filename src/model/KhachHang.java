@@ -11,7 +11,13 @@ public class KhachHang {
     public KhachHang() {
     }
 
-    public KhachHang(int maKhachHang, String hoTen, String soDienThoai, String email, String diaChi) {
+    public KhachHang(
+            int maKhachHang,
+            String hoTen,
+            String soDienThoai,
+            String email,
+            String diaChi
+    ) {
         this.maKhachHang = maKhachHang;
         this.hoTen = hoTen;
         this.soDienThoai = soDienThoai;
@@ -57,10 +63,5 @@ public class KhachHang {
 
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
-    }
-
-    @Override
-    public String toString() {
-        return hoTen + " - " + soDienThoai;
     }
 }

@@ -13,6 +13,7 @@ import service.SachService;
 import service.TheLoaiService;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
@@ -29,28 +30,26 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
     private JButton btnTimKhachHang;
     private JLabel lblKhachHang;
 
+    private JTextField txtTimSach;
+    private JTextField txtNamXB;
     private JComboBox<TheLoai> cbTheLoai;
     private JComboBox<NhaXuatBan> cbNXB;
 
-    private JTextField txtTimSach;
-    private JTextField txtSoLuong;
-
-    private JLabel lblNhanVien;
     private JLabel lblSachDangChon;
     private JLabel lblGia;
     private JLabel lblTon;
-    private JLabel lblTongTien;
-
+    private JTextField txtSoLuong;
     private JButton btnThemGio;
-    private JButton btnXoaDong;
-    private JButton btnThanhToan;
-    private JButton btnDong;
 
     private JTable tblSach;
     private JTable tblGioHang;
-
     private DefaultTableModel modelSach;
     private DefaultTableModel modelGioHang;
+
+    private JLabel lblTongTien;
+    private JButton btnXoaDong;
+    private JButton btnThanhToan;
+    private JButton btnDong;
 
     private HoaDonService hoaDonService;
     private SachService sachService;
@@ -66,7 +65,6 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
     private KhachHang khachHangDangChon;
 
     public HoaDonFrame(User user) {
-
         currentUser = user;
 
         hoaDonService = new HoaDonService();
@@ -76,7 +74,7 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
         nxbService = new NhaXuatBanService();
 
         dsSachDangHienThi = new ArrayList<Sach>();
-        dsSachTrongGio = new ArrayList<Sach>();
+        dsSachTrongGio = new ArrayList<Integer>().isEmpty() ? new ArrayList<Sach>() : new ArrayList<Sach>();
         dsSoLuong = new ArrayList<Integer>();
 
         GUI();
@@ -86,52 +84,197 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
     }
 
     public void GUI() {
-
         setTitle("Ban sach");
-        setSize(1100, 720);
+        setSize(1200, 760);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JLabel lblTieuDe = new JLabel("BAN SACH", JLabel.CENTER);
-        lblTieuDe.setFont(new Font("Arial", Font.BOLD, 28));
+        lblTieuDe.setFont(new Font("Arial", Font.BOLD, 30));
 
-        lblNhanVien = new JLabel(
+        JLabel lblNhanVien = new JLabel(
                 "Nhan vien: " + currentUser.getFullName(),
                 JLabel.CENTER
         );
+        lblNhanVien.setFont(new Font("Arial", Font.BOLD, 15));
+
+        JPanel pnTieuDe = new JPanel(new GridLayout(2, 1));
+        pnTieuDe.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        pnTieuDe.add(lblTieuDe);
+        pnTieuDe.add(lblNhanVien);
 
         txtSDTKhachHang = new JTextField();
         btnTimKhachHang = new JButton("Tim");
-
         lblKhachHang = new JLabel("Chua chon khach hang");
+        lblKhachHang.setFont(new Font("Arial", Font.BOLD, 13));
 
+        txtTimSach = new JTextField();
+        txtNamXB = new JTextField();
         cbTheLoai = new JComboBox<TheLoai>();
         cbNXB = new JComboBox<NhaXuatBan>();
 
-        txtTimSach = new JTextField();
-        txtSoLuong = new JTextField();
+        lblSachDangChon = new JLabel("Chua chon sach");
+        lblSachDangChon.setFont(new Font("Arial", Font.BOLD, 14));
 
-        lblSachDangChon = new JLabel("Sach dang chon: Chua chon");
         lblGia = new JLabel("Gia ban: 0");
         lblTon = new JLabel("Ton kho: 0");
-        lblTongTien = new JLabel("Tong tien: 0");
 
+        txtSoLuong = new JTextField();
         btnThemGio = new JButton("Them vao gio");
+
         btnXoaDong = new JButton("Xoa dong");
         btnThanhToan = new JButton("Thanh toan");
         btnDong = new JButton("Dong");
 
+        lblTongTien = new JLabel("Tong tien: 0");
+        lblTongTien.setFont(new Font("Arial", Font.BOLD, 22));
+
+        btnTimKhachHang.addActionListener(this);
         btnThemGio.addActionListener(this);
         btnXoaDong.addActionListener(this);
         btnThanhToan.addActionListener(this);
         btnDong.addActionListener(this);
-        btnTimKhachHang.addActionListener(this);
 
         cbTheLoai.addActionListener(this);
         cbNXB.addActionListener(this);
 
-        txtTimSach.getDocument().addDocumentListener(new DocumentListener() {
+        themSuKienLoc(txtTimSach);
+        themSuKienLoc(txtNamXB);
 
+        JPanel pnKhachHang = taoPanel("Thong tin khach hang");
+        pnKhachHang.setLayout(new GridLayout(2, 1, 8, 8));
+
+        JPanel pnSDT = new JPanel(new BorderLayout(8, 8));
+        pnSDT.add(new JLabel("SDT:"), BorderLayout.WEST);
+        pnSDT.add(txtSDTKhachHang, BorderLayout.CENTER);
+        pnSDT.add(btnTimKhachHang, BorderLayout.EAST);
+
+        JPanel pnTenKhach = new JPanel(new BorderLayout(8, 8));
+        pnTenKhach.add(new JLabel("Khach hang:"), BorderLayout.WEST);
+        pnTenKhach.add(lblKhachHang, BorderLayout.CENTER);
+
+        pnKhachHang.add(pnSDT);
+        pnKhachHang.add(pnTenKhach);
+
+        JPanel pnSachDangChon = taoPanel("Sach dang chon");
+        pnSachDangChon.setLayout(new GridLayout(5, 1, 8, 8));
+
+        pnSachDangChon.add(lblSachDangChon);
+        pnSachDangChon.add(lblGia);
+        pnSachDangChon.add(lblTon);
+
+        JPanel pnSoLuong = new JPanel(new BorderLayout(8, 8));
+        pnSoLuong.add(new JLabel("So luong:"), BorderLayout.WEST);
+        pnSoLuong.add(txtSoLuong, BorderLayout.CENTER);
+
+        pnSachDangChon.add(pnSoLuong);
+        pnSachDangChon.add(btnThemGio);
+
+        JPanel pnTrai = new JPanel(new BorderLayout(10, 10));
+        pnTrai.setPreferredSize(new Dimension(330, 520));
+        pnTrai.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
+
+        JPanel pnTraiTop = new JPanel();
+        pnTraiTop.setLayout(new BoxLayout(pnTraiTop, BoxLayout.Y_AXIS));
+
+        pnKhachHang.setMaximumSize(new Dimension(320, 130));
+        pnSachDangChon.setMaximumSize(new Dimension(320, 230));
+
+        pnTraiTop.add(pnKhachHang);
+        pnTraiTop.add(Box.createVerticalStrut(12));
+        pnTraiTop.add(pnSachDangChon);
+
+        pnTrai.add(pnTraiTop, BorderLayout.NORTH);
+
+        JPanel pnLocNgang = new JPanel(new GridLayout(2, 4, 8, 5));
+        pnLocNgang.setBorder(BorderFactory.createEmptyBorder(5, 5, 8, 5));
+
+        pnLocNgang.add(new JLabel("Ten sach:"));
+        pnLocNgang.add(new JLabel("The loai:"));
+        pnLocNgang.add(new JLabel("Nha xuat ban:"));
+        pnLocNgang.add(new JLabel("Nam XB:"));
+
+        pnLocNgang.add(txtTimSach);
+        pnLocNgang.add(cbTheLoai);
+        pnLocNgang.add(cbNXB);
+        pnLocNgang.add(txtNamXB);
+
+        modelSach = new DefaultTableModel();
+        modelSach.addColumn("Ma sach");
+        modelSach.addColumn("Ten sach");
+        modelSach.addColumn("Nam XB");
+        modelSach.addColumn("Gia ban");
+        modelSach.addColumn("Ton kho");
+
+        tblSach = new JTable(modelSach);
+        tblSach.setRowHeight(26);
+        tblSach.addMouseListener(this);
+
+        JPanel pnDanhSachSach = taoPanel("Danh sach sach");
+        pnDanhSachSach.setLayout(new BorderLayout(8, 8));
+        pnDanhSachSach.add(pnLocNgang, BorderLayout.NORTH);
+        pnDanhSachSach.add(new JScrollPane(tblSach), BorderLayout.CENTER);
+
+        modelGioHang = new DefaultTableModel();
+        modelGioHang.addColumn("Ma sach");
+        modelGioHang.addColumn("Ten sach");
+        modelGioHang.addColumn("So luong");
+        modelGioHang.addColumn("Gia ban");
+        modelGioHang.addColumn("Thanh tien");
+
+        tblGioHang = new JTable(modelGioHang);
+        tblGioHang.setRowHeight(26);
+
+        JPanel pnGioHang = taoPanel("Gio hang");
+        pnGioHang.setLayout(new BorderLayout());
+        pnGioHang.setPreferredSize(new Dimension(800, 210));
+        pnGioHang.add(new JScrollPane(tblGioHang), BorderLayout.CENTER);
+
+        JPanel pnPhai = new JPanel(new BorderLayout(10, 10));
+        pnPhai.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
+        pnPhai.add(pnDanhSachSach, BorderLayout.CENTER);
+        pnPhai.add(pnGioHang, BorderLayout.SOUTH);
+
+        JPanel pnNoiDung = new JPanel(new BorderLayout(10, 10));
+        pnNoiDung.add(pnTrai, BorderLayout.WEST);
+        pnNoiDung.add(pnPhai, BorderLayout.CENTER);
+
+        JPanel pnNut = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        pnNut.add(btnXoaDong);
+        pnNut.add(btnThanhToan);
+        pnNut.add(btnDong);
+
+        JPanel pnThanhToan = new JPanel(new BorderLayout());
+        pnThanhToan.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        pnThanhToan.add(lblTongTien, BorderLayout.WEST);
+        pnThanhToan.add(pnNut, BorderLayout.EAST);
+
+        setLayout(new BorderLayout(10, 10));
+        add(pnTieuDe, BorderLayout.NORTH);
+        add(pnNoiDung, BorderLayout.CENTER);
+        add(pnThanhToan, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+    public JPanel taoPanel(String title) {
+        JPanel panel = new JPanel();
+
+        TitledBorder border = BorderFactory.createTitledBorder(title);
+        border.setTitleFont(new Font("Arial", Font.BOLD, 14));
+
+        panel.setBorder(
+                BorderFactory.createCompoundBorder(
+                        border,
+                        BorderFactory.createEmptyBorder(8, 8, 8, 8)
+                )
+        );
+
+        return panel;
+    }
+
+    public void themSuKienLoc(JTextField txt) {
+        txt.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) {
                 locSach();
             }
@@ -144,217 +287,64 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
                 locSach();
             }
         });
-
-        JPanel pnTitle = new JPanel(new GridLayout(2, 1));
-
-        pnTitle.add(lblTieuDe);
-        pnTitle.add(lblNhanVien);
-
-        JPanel pnKhachHang = new JPanel(new GridLayout(2, 3, 10, 10));
-
-        pnKhachHang.setBorder(
-                BorderFactory.createTitledBorder("Thong tin khach hang")
-        );
-
-        pnKhachHang.add(new JLabel("SDT:"));
-        pnKhachHang.add(txtSDTKhachHang);
-        pnKhachHang.add(btnTimKhachHang);
-
-        pnKhachHang.add(new JLabel("Khach hang:"));
-        pnKhachHang.add(lblKhachHang);
-        pnKhachHang.add(new JLabel(""));
-
-        JPanel pnLoc = new JPanel(new GridLayout(3, 2, 10, 10));
-
-        pnLoc.setBorder(
-                BorderFactory.createTitledBorder("Loc sach")
-        );
-
-        pnLoc.add(new JLabel("Ten sach:"));
-        pnLoc.add(txtTimSach);
-
-        pnLoc.add(new JLabel("The loai:"));
-        pnLoc.add(cbTheLoai);
-
-        pnLoc.add(new JLabel("Nha xuat ban:"));
-        pnLoc.add(cbNXB);
-
-        JPanel pnTopContent = new JPanel(new BorderLayout(10, 10));
-
-        pnTopContent.add(pnKhachHang, BorderLayout.NORTH);
-        pnTopContent.add(pnLoc, BorderLayout.CENTER);
-
-        modelSach = new DefaultTableModel();
-
-        modelSach.addColumn("Ma sach");
-        modelSach.addColumn("Ten sach");
-        modelSach.addColumn("Gia ban");
-        modelSach.addColumn("Ton kho");
-
-        tblSach = new JTable(modelSach);
-
-        tblSach.addMouseListener(this);
-
-        JPanel pnDanhSachSach = new JPanel(new BorderLayout());
-
-        pnDanhSachSach.setBorder(
-                BorderFactory.createTitledBorder("Danh sach sach")
-        );
-
-        pnDanhSachSach.add(
-                new JScrollPane(tblSach),
-                BorderLayout.CENTER
-        );
-
-        JPanel pnChonSach = new JPanel(new GridLayout(2, 4, 10, 10));
-
-        pnChonSach.setBorder(
-                BorderFactory.createTitledBorder("Them vao gio")
-        );
-
-        pnChonSach.add(lblSachDangChon);
-        pnChonSach.add(lblGia);
-        pnChonSach.add(lblTon);
-        pnChonSach.add(new JLabel(""));
-
-        pnChonSach.add(new JLabel("So luong:"));
-        pnChonSach.add(txtSoLuong);
-        pnChonSach.add(btnThemGio);
-        pnChonSach.add(new JLabel(""));
-
-        JPanel pnSachVaChon = new JPanel(new BorderLayout(10, 10));
-
-        pnSachVaChon.add(pnDanhSachSach, BorderLayout.CENTER);
-        pnSachVaChon.add(pnChonSach, BorderLayout.SOUTH);
-
-        modelGioHang = new DefaultTableModel();
-
-        modelGioHang.addColumn("Ma sach");
-        modelGioHang.addColumn("Ten sach");
-        modelGioHang.addColumn("So luong");
-        modelGioHang.addColumn("Gia ban");
-        modelGioHang.addColumn("Thanh tien");
-
-        tblGioHang = new JTable(modelGioHang);
-
-        JPanel pnGioHang = new JPanel(new BorderLayout());
-
-        pnGioHang.setBorder(
-                BorderFactory.createTitledBorder("Gio hang")
-        );
-
-        pnGioHang.add(
-                new JScrollPane(tblGioHang),
-                BorderLayout.CENTER
-        );
-
-        JPanel pnCenter = new JPanel(new GridLayout(2, 1, 10, 10));
-
-        pnCenter.add(pnSachVaChon);
-        pnCenter.add(pnGioHang);
-
-        JPanel pnNut = new JPanel(new FlowLayout());
-
-        pnNut.add(btnXoaDong);
-        pnNut.add(btnThanhToan);
-        pnNut.add(btnDong);
-
-        JPanel pnDuoi = new JPanel(new BorderLayout());
-
-        pnDuoi.add(lblTongTien, BorderLayout.NORTH);
-        pnDuoi.add(pnNut, BorderLayout.SOUTH);
-
-        JPanel pnNoiDung = new JPanel(new BorderLayout(10, 10));
-
-        pnNoiDung.add(pnTopContent, BorderLayout.NORTH);
-        pnNoiDung.add(pnCenter, BorderLayout.CENTER);
-
-        setLayout(new BorderLayout(10, 10));
-
-        add(pnTitle, BorderLayout.NORTH);
-        add(pnNoiDung, BorderLayout.CENTER);
-        add(pnDuoi, BorderLayout.SOUTH);
-
-        setVisible(true);
     }
 
     public void loadComboBoxLoc() {
-
         cbTheLoai.removeAllItems();
         cbNXB.removeAllItems();
 
         cbTheLoai.addItem(new TheLoai(0, "Tat ca"));
         cbNXB.addItem(new NhaXuatBan(0, "Tat ca"));
 
-        List<TheLoai> dsTheLoai =
-                theLoaiService.layDanhSach();
-
+        List<TheLoai> dsTheLoai = theLoaiService.layDanhSach();
         for (TheLoai tl : dsTheLoai) {
             cbTheLoai.addItem(tl);
         }
 
-        List<NhaXuatBan> dsNXB =
-                nxbService.layDanhSach();
-
+        List<NhaXuatBan> dsNXB = nxbService.layDanhSach();
         for (NhaXuatBan nxb : dsNXB) {
             cbNXB.addItem(nxb);
         }
     }
 
     public void timKhachHang() {
-
-        String sdt =
-                txtSDTKhachHang.getText().trim();
+        String sdt = txtSDTKhachHang.getText().trim();
 
         if (sdt.equals("")) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Nhap so dien thoai"
-            );
-
+            JOptionPane.showMessageDialog(this, "Nhap so dien thoai");
             return;
         }
 
-        KhachHang kh =
-                khachHangService.timTheoSDT(sdt);
+        KhachHang kh = khachHangService.timTheoSDT(sdt);
 
         if (kh == null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Khong tim thay khach hang"
-            );
-
+            JOptionPane.showMessageDialog(this, "Khong tim thay khach hang");
             return;
         }
 
         khachHangDangChon = kh;
 
         lblKhachHang.setText(
-                kh.getHoTen()
-                        + " - "
-                        + kh.getSoDienThoai()
+                kh.getHoTen() + " - " + kh.getSoDienThoai()
         );
     }
 
     public void locSach() {
+        if (modelSach == null || txtTimSach == null || txtNamXB == null) {
+            return;
+        }
 
         modelSach.setRowCount(0);
-
         dsSachDangHienThi.clear();
 
-        String tenSach =
-                txtTimSach.getText();
+        String tenSach = txtTimSach.getText();
 
         int maTheLoai = 0;
         int maNXB = 0;
+        int namXB = 0;
 
-        TheLoai tl =
-                (TheLoai) cbTheLoai.getSelectedItem();
-
-        NhaXuatBan nxb =
-                (NhaXuatBan) cbNXB.getSelectedItem();
+        TheLoai tl = (TheLoai) cbTheLoai.getSelectedItem();
+        NhaXuatBan nxb = (NhaXuatBan) cbNXB.getSelectedItem();
 
         if (tl != null) {
             maTheLoai = tl.getMaTheLoai();
@@ -364,20 +354,28 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
             maNXB = nxb.getMaNXB();
         }
 
-        List<Sach> ds =
-                sachService.timKiem(
-                        tenSach,
-                        maTheLoai,
-                        maNXB
-                );
+        try {
+            if (!txtNamXB.getText().trim().equals("")) {
+                namXB = Integer.parseInt(txtNamXB.getText().trim());
+            }
+        } catch (Exception e) {
+            namXB = 0;
+        }
+
+        List<Sach> ds = sachService.timKiem(
+                tenSach,
+                maTheLoai,
+                maNXB,
+                namXB
+        );
 
         for (Sach s : ds) {
-
             dsSachDangHienThi.add(s);
 
             modelSach.addRow(new Object[]{
                     s.getMaSach(),
                     s.getTenSach(),
+                    s.getNamXB(),
                     s.getGiaBan(),
                     s.getSoLuong()
             });
@@ -387,100 +385,52 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
     }
 
     public void resetSachDangChon() {
-
         sachDangChon = null;
-
-        lblSachDangChon.setText(
-                "Sach dang chon: Chua chon"
-        );
-
+        lblSachDangChon.setText("Chua chon sach");
         lblGia.setText("Gia ban: 0");
         lblTon.setText("Ton kho: 0");
     }
 
     public void chonSachTuBang() {
-
         int row = tblSach.getSelectedRow();
 
         if (row < 0) {
             return;
         }
 
-        sachDangChon =
-                dsSachDangHienThi.get(row);
+        sachDangChon = dsSachDangHienThi.get(row);
 
-        lblSachDangChon.setText(
-                "Sach dang chon: "
-                        + sachDangChon.getTenSach()
-        );
-
-        lblGia.setText(
-                "Gia ban: "
-                        + sachDangChon.getGiaBan()
-        );
-
-        lblTon.setText(
-                "Ton kho: "
-                        + sachDangChon.getSoLuong()
-        );
+        lblSachDangChon.setText("Sach: " + sachDangChon.getTenSach());
+        lblGia.setText("Gia ban: " + sachDangChon.getGiaBan());
+        lblTon.setText("Ton kho: " + sachDangChon.getSoLuong());
     }
 
     public boolean kiemTraThemGio() {
-
         if (sachDangChon == null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Chon sach trong bang truoc"
-            );
-
+            JOptionPane.showMessageDialog(this, "Chon sach trong bang truoc");
             return false;
         }
 
         if (txtSoLuong.getText().trim().equals("")) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Nhap so luong"
-            );
-
+            JOptionPane.showMessageDialog(this, "Nhap so luong");
             return false;
         }
 
         try {
-
-            int soLuong =
-                    Integer.parseInt(
-                            txtSoLuong.getText()
-                    );
+            int soLuong = Integer.parseInt(txtSoLuong.getText());
 
             if (soLuong <= 0) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "So luong phai > 0"
-                );
-
+                JOptionPane.showMessageDialog(this, "So luong phai > 0");
                 return false;
             }
 
             if (soLuong > sachDangChon.getSoLuong()) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Vuot qua ton kho"
-                );
-
+                JOptionPane.showMessageDialog(this, "Vuot qua ton kho");
                 return false;
             }
 
         } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "So luong khong hop le"
-            );
-
+            JOptionPane.showMessageDialog(this, "So luong khong hop le");
             return false;
         }
 
@@ -488,40 +438,24 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
     }
 
     public void themVaoGio() {
-
         if (!kiemTraThemGio()) {
             return;
         }
 
-        int soLuong =
-                Integer.parseInt(
-                        txtSoLuong.getText()
-                );
+        int soLuong = Integer.parseInt(txtSoLuong.getText());
 
         for (int i = 0; i < dsSachTrongGio.size(); i++) {
+            if (dsSachTrongGio.get(i).getMaSach() == sachDangChon.getMaSach()) {
+                int soLuongMoi = dsSoLuong.get(i) + soLuong;
 
-            if (dsSachTrongGio.get(i).getMaSach()
-                    == sachDangChon.getMaSach()) {
-
-                int slMoi =
-                        dsSoLuong.get(i) + soLuong;
-
-                if (slMoi > sachDangChon.getSoLuong()) {
-
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Vuot ton kho"
-                    );
-
+                if (soLuongMoi > sachDangChon.getSoLuong()) {
+                    JOptionPane.showMessageDialog(this, "Tong so luong vuot ton kho");
                     return;
                 }
 
-                dsSoLuong.set(i, slMoi);
-
+                dsSoLuong.set(i, soLuongMoi);
                 loadGioHang();
-
                 txtSoLuong.setText("");
-
                 return;
             }
         }
@@ -530,25 +464,19 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
         dsSoLuong.add(soLuong);
 
         loadGioHang();
-
         txtSoLuong.setText("");
     }
 
     public void loadGioHang() {
-
         modelGioHang.setRowCount(0);
 
         double tongTien = 0;
 
         for (int i = 0; i < dsSachTrongGio.size(); i++) {
-
             Sach s = dsSachTrongGio.get(i);
-
             int soLuong = dsSoLuong.get(i);
 
-            double thanhTien =
-                    soLuong * s.getGiaBan();
-
+            double thanhTien = soLuong * s.getGiaBan();
             tongTien += thanhTien;
 
             modelGioHang.addRow(new Object[]{
@@ -560,23 +488,14 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
             });
         }
 
-        lblTongTien.setText(
-                "Tong tien: " + tongTien
-        );
+        lblTongTien.setText("Tong tien: " + tongTien);
     }
 
     public void xoaDong() {
-
-        int row =
-                tblGioHang.getSelectedRow();
+        int row = tblGioHang.getSelectedRow();
 
         if (row < 0) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Chon dong can xoa"
-            );
-
+            JOptionPane.showMessageDialog(this, "Chon dong can xoa");
             return;
         }
 
@@ -587,69 +506,56 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
     }
 
     public void thanhToan() {
-
         if (khachHangDangChon == null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Chua chon khach hang"
-            );
-
+            JOptionPane.showMessageDialog(this, "Chua chon khach hang");
             return;
         }
 
         if (dsSachTrongGio.size() == 0) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Gio hang rong"
-            );
-
+            JOptionPane.showMessageDialog(this, "Gio hang rong");
             return;
         }
 
-        boolean ketQua =
-                hoaDonService.taoHoaDonNhieuSach(
-                        khachHangDangChon.getMaKhachHang(),
-                        currentUser.getUserId(),
-                        dsSachTrongGio,
-                        dsSoLuong
-                );
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Xac nhan thanh toan?",
+                "Xac nhan",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        boolean ketQua = hoaDonService.taoHoaDonNhieuSach(
+                khachHangDangChon.getMaKhachHang(),
+                currentUser.getUserId(),
+                dsSachTrongGio,
+                dsSoLuong
+        );
 
         if (ketQua) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Thanh toan thanh cong"
-            );
+            JOptionPane.showMessageDialog(this, "Thanh toan thanh cong");
 
             dsSachTrongGio.clear();
             dsSoLuong.clear();
 
             loadGioHang();
-
             locSach();
 
             txtSoLuong.setText("");
 
         } else {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Thanh toan that bai"
-            );
+            JOptionPane.showMessageDialog(this, "Thanh toan that bai");
         }
     }
 
     public void actionPerformed(ActionEvent e) {
-
         if (e.getSource() == btnTimKhachHang) {
             timKhachHang();
         }
 
-        if (e.getSource() == cbTheLoai
-                || e.getSource() == cbNXB) {
-
+        if (e.getSource() == cbTheLoai || e.getSource() == cbNXB) {
             locSach();
         }
 
@@ -671,7 +577,6 @@ public class HoaDonFrame extends JFrame implements ActionListener, MouseListener
     }
 
     public void mouseClicked(MouseEvent e) {
-
         if (e.getSource() == tblSach) {
             chonSachTuBang();
         }
